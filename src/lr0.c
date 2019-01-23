@@ -27,6 +27,7 @@
 
 #include <bitset.h>
 
+#include "chain.h"
 #include "closure.h"
 #include "complain.h"
 #include "getargs.h"
@@ -122,8 +123,9 @@ allocate_itemsets (void)
     for (item_number *rhsp = rules[r].rhs; 0 <= *rhsp; ++rhsp)
       {
         symbol_number sym = item_number_as_symbol_number (*rhsp);
-        count += 1;
-        symbol_count[sym] += 1;
+        size_t ancestors = chain_ancestors_count (sym);
+        count += ancestors;
+        symbol_count[sym] += ancestors;
       }
 
   /* See comments before new_itemsets.  All the vectors of items
@@ -212,10 +214,18 @@ new_itemsets (state *s)
   for (size_t i = 0; i < nitemset; ++i)
     if (item_number_is_symbol_number (ritem[itemset[i]]))
       {
+        item_print (ritem + itemset[i], NULL, stderr);
+        fputc ('\n', stderr);
         symbol_number sym = item_number_as_symbol_number (ritem[itemset[i]]);
-        bitset_set (shift_symbol, sym);
-        kernel_base[sym][kernel_size[sym]] = itemset[i] + 1;
-        kernel_size[sym]++;
+        bitset_iterator iter;
+        symbol_number des;
+        BITSET_FOR_EACH (iter, descendants[sym], des, 0)
+          if (is_leaf (des))
+            {
+              bitset_set (shift_symbol, des);
+              kernel_base[des][kernel_size[des]] = itemset[i] + 1;
+              kernel_size[des]++;
+            }
       }
 
   if (trace_flag & trace_automaton)
@@ -376,7 +386,7 @@ generate_states (void)
       closure (s->items, s->nitems);
       /* Record the reductions allowed out of this state.  */
       save_reductions (s);
-      /* Find the itemsets of the states that shifts can reach.  */
+      /* Find the itemsets of the states that shifts/gotos can reach.  */
       new_itemsets (s);
       /* Find or create the core structures for those states.  */
       append_states (s);
