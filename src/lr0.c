@@ -309,14 +309,29 @@ save_reductions (state *s)
       if (item_number_is_rule_number (item))
         {
           rule_number r = item_number_as_rule_number (item);
-          redset[count++] = &rules[r];
-          if (r == 0)
+          if (!rule_useless_chain_p (&rules[r]))
             {
-              /* This is "reduce 0", i.e., accept. */
-              aver (!final_state);
-              final_state = s;
+              redset[count++] = &rules[r];
+              if (r == 0)
+                {
+                  /* This is "reduce 0", i.e., accept. */
+                  aver (!final_state);
+                  final_state = s;
+                }
             }
         }
+    }
+
+  if (trace_flag & trace_automaton)
+    {
+      fprintf (stderr, "reduction[%d] =\n", s->number);
+      for (int i = 0; i < count; ++i)
+        {
+          rule_lhs_print (redset[i], NULL, stderr);
+          rule_rhs_print (redset[i], stderr);
+          fputc ('\n', stderr);
+        }
+      fputc ('\n', stderr);
     }
 
   /* Make a reductions structure and copy the data into it.  */
