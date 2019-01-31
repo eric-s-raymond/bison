@@ -156,6 +156,13 @@ rule_rhs_print_xml (rule const *r, FILE *out, int level)
 }
 
 void
+rule_print (rule const *r, FILE *out)
+{
+  rule_lhs_print (r, NULL, out);
+  rule_rhs_print (r, out);
+}
+
+void
 ritem_print (FILE *out)
 {
   fputs ("RITEM\n", out);

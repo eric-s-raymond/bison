@@ -118,6 +118,9 @@ set_goto_map (void)
     }
 
   free (temp_map);
+
+  for (int i = 0; i < ngotos; ++i)
+    fprintf (stderr, "goto[%d] = %d -> %d\n", i, from_state[i], to_state[i]);
 }
 
 
@@ -218,6 +221,9 @@ build_relations (void)
           state *s = states[from_state[i]];
           states1[0] = s->number;
 
+          fprintf (stderr, "build_relations: ");
+          rule_print (*rulep, stderr);
+          fputc ('\n', stderr);
           int length = 1;
           item_number const *rp;
           for (rp = (*rulep)->rhs; 0 <= *rp; rp++)

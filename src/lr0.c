@@ -324,14 +324,14 @@ save_reductions (state *s)
 
   if (trace_flag & trace_automaton)
     {
-      fprintf (stderr, "reduction[%d] =\n", s->number);
+      fprintf (stderr, "reduction[%d] = {\n", s->number);
       for (int i = 0; i < count; ++i)
         {
           rule_lhs_print (redset[i], NULL, stderr);
           rule_rhs_print (redset[i], stderr);
           fputc ('\n', stderr);
         }
-      fputc ('\n', stderr);
+      fputs ("}\n", stderr);
     }
 
   /* Make a reductions structure and copy the data into it.  */

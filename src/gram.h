@@ -248,6 +248,8 @@ size_t rule_rhs_length (rule const *r);
 /* Print this rule's RHS on OUT.  */
 void rule_rhs_print (rule const *r, FILE *out);
 
+/* Print this rule on OUT.  */
+void rule_print (rule const *r, FILE *out);
 
 
 

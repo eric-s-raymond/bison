@@ -56,8 +56,13 @@ transitions_to (state *s, symbol_number sym)
 {
   transitions *trans = s->transitions;
   for (int i = 0; i < trans->num; ++i)
-    if (TRANSITION_SYMBOL (trans, i) == sym)
-      return trans->states[i];
+    {
+      fprintf (stderr, "transitions_to: trans[%d, %d] = %s == %s?\n",
+               s->number,
+               i, symbols[TRANSITION_SYMBOL (trans, i)]->tag, symbols[sym]->tag);
+      if (TRANSITION_SYMBOL (trans, i) == sym)
+        return trans->states[i];
+    }
   abort ();
 }
 
@@ -196,6 +201,11 @@ state_transitions_set (state *s, int num, state **dst)
 {
   aver (!s->transitions);
   s->transitions = transitions_new (num, dst);
+  for (int i = 0; i < s->transitions->num; ++i)
+    {
+      fprintf (stderr, "transition[%d][%d] = %d\n",
+               s->number, i, s->transitions->states[i]->number);
+    }
 }
 
 
