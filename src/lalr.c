@@ -221,7 +221,8 @@ build_relations (void)
           state *s = states[from_state[i]];
           states1[0] = s->number;
 
-          fprintf (stderr, "build_relations: ");
+          fprintf (stderr, "build_relations for goto[%lu] from %d to %d: ",
+                   i, from_state[i], to_state[i]);
           rule_print (*rulep, stderr);
           fputc ('\n', stderr);
           int length = 1;
@@ -236,6 +237,11 @@ build_relations (void)
           if (!s->consistent)
             add_lookback_edge (s, *rulep, i);
 
+          for (int j = 0; j < length; ++j)
+            fprintf (stderr, "goto[%lu] from %d to %d: states1[%d] = %d\n",
+                     i, from_state[i], to_state[i],
+                     j, states1[j]);
+          
           length--;
           bool done = false;
           while (!done)
