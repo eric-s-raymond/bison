@@ -327,8 +327,7 @@ save_reductions (state *s)
       fprintf (stderr, "reduction[%d] = {\n", s->number);
       for (int i = 0; i < count; ++i)
         {
-          rule_lhs_print (redset[i], NULL, stderr);
-          rule_rhs_print (redset[i], stderr);
+          rule_print (redset[i], stderr);
           fputc ('\n', stderr);
         }
       fputs ("}\n", stderr);
