@@ -214,8 +214,11 @@ new_itemsets (state *s)
   for (size_t i = 0; i < nitemset; ++i)
     if (item_number_is_symbol_number (ritem[itemset[i]]))
       {
-        item_print (ritem + itemset[i], NULL, stderr);
-        fputc ('\n', stderr);
+        if (trace_flag & trace_automaton)
+          {
+            item_print (ritem + itemset[i], NULL, stderr);
+            fputc ('\n', stderr);
+          }
         symbol_number sym = item_number_as_symbol_number (ritem[itemset[i]]);
         bitset_iterator iter;
         symbol_number des;
@@ -309,7 +312,8 @@ save_reductions (state *s)
       if (item_number_is_rule_number (item))
         {
           rule_number r = item_number_as_rule_number (item);
-          if (!rule_useless_chain_p (&rules[r]))
+          if (!(feature_flag & feature_eliminate_chains)
+              || !rule_useless_chain_p (&rules[r]))
             {
               redset[count++] = &rules[r];
               if (r == 0)

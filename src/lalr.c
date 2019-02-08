@@ -119,8 +119,9 @@ set_goto_map (void)
 
   free (temp_map);
 
-  for (int i = 0; i < ngotos; ++i)
-    fprintf (stderr, "goto[%d] = %d -> %d\n", i, from_state[i], to_state[i]);
+  if (trace_flag & trace_automaton)
+    for (int i = 0; i < ngotos; ++i)
+      fprintf (stderr, "goto[%d] = %d -> %d\n", i, from_state[i], to_state[i]);
 }
 
 
@@ -221,10 +222,13 @@ build_relations (void)
           state *s = states[from_state[i]];
           states1[0] = s->number;
 
-          fprintf (stderr, "build_relations for goto[%lu] from %d to %d: ",
-                   i, from_state[i], to_state[i]);
-          rule_print (*rulep, stderr);
-          fputc ('\n', stderr);
+          if (trace_flag & trace_automaton)
+            {
+              fprintf (stderr, "build_relations for goto[%lu] from %d to %d: ",
+                       i, from_state[i], to_state[i]);
+              rule_print (*rulep, stderr);
+              fputc ('\n', stderr);
+            }
           int length = 1;
           item_number const *rp;
           for (rp = (*rulep)->rhs; 0 <= *rp; rp++)
@@ -237,10 +241,11 @@ build_relations (void)
           if (!s->consistent)
             add_lookback_edge (s, *rulep, i);
 
-          for (int j = 0; j < length; ++j)
-            fprintf (stderr, "goto[%lu] from %d to %d: states1[%d] = %d\n",
-                     i, from_state[i], to_state[i],
-                     j, states1[j]);
+          if (trace_flag & trace_automaton)
+            for (int j = 0; j < length; ++j)
+              fprintf (stderr, "goto[%lu] from %d to %d: states1[%d] = %d\n",
+                       i, from_state[i], to_state[i],
+                       j, states1[j]);
           
           length--;
           bool done = false;
