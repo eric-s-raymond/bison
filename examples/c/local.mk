@@ -16,6 +16,7 @@
 cdir = $(docdir)/%D%
 dist_c_DATA = %D%/README.md
 
+include %D%/calc/local.mk
 include %D%/lexcalc/local.mk
 include %D%/mfcalc/local.mk
 include %D%/rpcalc/local.mk
